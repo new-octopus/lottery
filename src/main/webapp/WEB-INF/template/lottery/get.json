@@ -1,0 +1,10 @@
+<#compress>
+{  
+"status": "OK",  
+	"result": {
+	"lottery_type": "${lottery_type}",
+	"lottery_time": "${lottery_time}",
+	"lottery_no": "${lottery_no}"
+	}
+}
+</#compress>
