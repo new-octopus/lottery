@@ -3,12 +3,27 @@ package com.mediacross.lottery.utils;
 import java.util.Arrays;
 import java.util.Map;
 
+import org.apache.commons.beanutils.DynaBean;
+import org.apache.commons.beanutils.DynaClass;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.MapUtils;
+
+import com.mediacross.lottery.common.error.SystemException;
 
 public final class LangUtils {
 	
 	private LangUtils(){}
+	
+	public static DynaBean newInstance(DynaClass clazz) {
+		Assert.notNull(clazz, "clazz不能为null");
+		try {
+			return clazz.newInstance();
+		} catch (IllegalAccessException e) {
+			throw new SystemException("创建对象失败！", e);
+		} catch (InstantiationException e) {
+			throw new SystemException("创建对象失败！", e);
+		}
+	}
 	
 	public static String sign(String token, Map<String, String> paramMap) {
 		// 拼接有序的参数名-值串

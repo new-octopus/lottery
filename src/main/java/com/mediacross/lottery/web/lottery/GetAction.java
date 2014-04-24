@@ -11,11 +11,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.mediacross.lottery.common.Config;
 import com.mediacross.lottery.common.error.AppException;
 import com.mediacross.lottery.common.error.SystemException;
 import com.mediacross.lottery.service.LotteryService;
 import com.mediacross.lottery.utils.DesUtil;
+import com.mediacross.lottery.utils.LangUtils;
 import com.mediacross.lottery.vo.Lottery;
 import com.mediacross.lottery.web.BaseAction;
 
@@ -32,23 +32,13 @@ public class GetAction extends BaseAction {
 	
 	@Override
 	public DynaBean execute(Map paramMap) throws AppException {
-		DynaBean result;
-		try {
-			result = resultClazz.newInstance();
-			Lottery lottery = lotteryService.getLottery();
-			result.set("lottery_type",  lottery.getLotteryType().getLotteryType());
-			result.set("lottery_time",  lottery.getLotteryType().getLotteryTime());
-			result.set("lottery_no", DesUtil.encrypt(lottery.getLotteryNo(),  config.getClientToken()));
-			return result;
-		} catch (IllegalAccessException e) {
-			LOG.error("创建对象失败！", e);
-			throw new SystemException("创建对象失败！");
-		} catch (InstantiationException e) {
-			LOG.error("创建对象失败！", e);
-			throw new SystemException("创建对象失败！");
-		} catch (Exception e) {
-			throw new SystemException("", e);
-		}
+		DynaBean result = LangUtils.newInstance(resultClazz);
+		Lottery lottery = lotteryService.getLottery();
+		result.set("lottery_type", lottery.getLotteryType().getLotteryType());
+		result.set("lottery_time", lottery.getLotteryType().getLotteryTime());
+		result.set("lottery_no", DesUtil.encrypt(lottery.getLotteryNo(),
+				config.getClientToken()));
+		return result;
 	}
 
 }

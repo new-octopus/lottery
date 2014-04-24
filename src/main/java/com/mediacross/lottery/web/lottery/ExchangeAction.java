@@ -6,14 +6,15 @@ import org.apache.commons.beanutils.BasicDynaClass;
 import org.apache.commons.beanutils.DynaBean;
 import org.apache.commons.beanutils.DynaClass;
 import org.apache.commons.beanutils.DynaProperty;
+import org.apache.commons.collections.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.mediacross.lottery.common.Constants.LotteryAwardsStatus;
 import com.mediacross.lottery.common.error.AppException;
-import com.mediacross.lottery.common.error.SystemException;
 import com.mediacross.lottery.service.LotteryAwardsService;
 import com.mediacross.lottery.utils.DesUtil;
+import com.mediacross.lottery.utils.LangUtils;
 import com.mediacross.lottery.vo.LotteryAwards;
 import com.mediacross.lottery.web.BaseAction;
 
@@ -28,35 +29,31 @@ public class ExchangeAction extends BaseAction {
 	
 	@Override
 	public DynaBean execute(Map paramMap) throws AppException {
-		String lotteryNo = null;
-		try {
-			lotteryNo = DesUtil.decrypt((String) paramMap.get("lottery_no"),
-					config.getClientToken());
-			LotteryAwards lotteryAwards = lotteryAwardsService
-					.getLotteryAwards(lotteryNo);
-			DynaBean result = null;
-			try {
-				result = resultClazz.newInstance();
-				// 未中奖
-				if (lotteryAwards == null) {
-					result.set("lottery_state", LotteryAwardsStatus.LOSE);
-					// 中奖
-				} else {
-					result.set("lottery_state", LotteryAwardsStatus.WIN);
-					result.set("lottery_awards", lotteryAwards);
-				}
-				return result;
-			} catch (IllegalAccessException e) {
-				// LOG.error("创建对象失败！", e);
-				throw new SystemException("创建对象失败！");
-			} catch (InstantiationException e) {
-				// LOG.error("创建对象失败！", e);
-				throw new SystemException("创建对象失败！");
-			}
-		} catch (Exception e) {
-			// TODO
+		String lotteryNo = DesUtil.decrypt((String) paramMap.get("lottery_no"),
+				config.getClientToken());
+		LotteryAwards lotteryAwards = lotteryAwardsService.getLotteryAwards(lotteryNo);
+		 DynaBean result = LangUtils.newInstance(resultClazz);
+		// 未中奖
+		if (lotteryAwards == null) {
+			result.set("lottery_state", LotteryAwardsStatus.LOSE);
+			// 中奖
+		} else {
+			result.set("lottery_state", LotteryAwardsStatus.WIN);
+			result.set("lottery_awards", lotteryAwards);
 		}
-		return null;
+		return result;
 	}
+	
+	@Override
+	public boolean validate(Map paramMap) throws AppException {
+		if (!super.validate(paramMap)) {
+			return false;
+		}
 
+		if (MapUtils.isEmpty(paramMap) || paramMap.containsKey("lottery_no")) {
+			throw new AppException(10006, "缺少必选请求参数");
+		}
+		return true;
+	}
+	
 }

@@ -3,6 +3,7 @@ package com.mediacross.lottery.web.lottery;
 import java.util.Map;
 
 import org.apache.commons.beanutils.DynaBean;
+import org.apache.commons.collections.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -19,21 +20,22 @@ public class EnsureAction extends BaseAction {
 
 	@Override
 	public DynaBean execute(Map paramMap) throws AppException {
-		String lotteryNo = null;
-		try {
-			lotteryNo = DesUtil.decrypt((String) paramMap.get("lottery_no"),
-					config.getClientToken());
-			lotteryService.updateLottery(lotteryNo, LotteryStatus.HAS_GET);
-		} catch (Exception e) {
-			// TODO
-		}
+		String lotteryNo = DesUtil.decrypt((String) paramMap.get("lottery_no"),
+				config.getClientToken());
+		lotteryService.updateLottery(lotteryNo, LotteryStatus.HAS_GET);
 		return null;
 	}
 	
 	@Override
-	public boolean validate(Map paramMap) {
-		// TODO Auto-generated method stub
-		return super.validate(paramMap);
+	public boolean validate(Map paramMap) throws AppException {
+		if (!super.validate(paramMap)) {
+			return false;
+		}
+
+		if (MapUtils.isEmpty(paramMap) || paramMap.containsKey("lottery_no")) {
+			throw new AppException(10006, "缺少必选请求参数");
+		}
+		return true;
 	}
 
 }

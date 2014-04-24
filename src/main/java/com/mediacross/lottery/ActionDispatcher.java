@@ -36,21 +36,16 @@ public class ActionDispatcher implements
 	 * @return 响应内容。
 	 */
 	public Response dispatch(ActionContext context) {
-		try {
-			Action actionBean = null;
-			if ((actionBean = actionMap.get(context.getRequstUri())) == null) {
-				// TODO
-				LOG.error("非法请求uri：" + context.getRequstUri());
-			} else {
-				LOG.debug("请求uri[" + context.getRequstUri() + "]交给actionBean["
-						+ actionBean + "]处理。");
-				return actionBean.request(context);
-			}
-		} catch (Exception e) {
-			LOG.error("", e);
-			// TODO
+		Action actionBean = null;
+		if ((actionBean = actionMap.get(context.getRequstUri())) == null) {
+			Response response = new Response();
+			response.setStatus(404);
+			return response;
+		} else {
+			LOG.debug("请求uri[" + context.getRequstUri() + "]交给actionBean["
+					+ actionBean + "]处理。");
+			return actionBean.request(context);
 		}
-		return null;
 	}
 
 	@Override
