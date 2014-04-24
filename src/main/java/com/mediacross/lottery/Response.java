@@ -59,5 +59,13 @@ public class Response {
 	public String getEncoding() {
 		return encoding;
 	}
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "Response [status=" + status + ", encoding=" + encoding
+				+ ", type=" + type + ", content=" + content + "]";
+	}
 	
 }

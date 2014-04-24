@@ -21,4 +21,5 @@ public interface Constants {
 		/** 中奖 */
 		int WIN = 2;
 	}
+	
 }

@@ -1,12 +1,11 @@
 package com.mediacross.lottery.web;
 
-import java.util.Arrays;
 import java.util.Map;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.beanutils.DynaBean;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +18,7 @@ import com.mediacross.lottery.common.HttpFormat;
 import com.mediacross.lottery.common.HttpStatus;
 import com.mediacross.lottery.common.error.AppException;
 import com.mediacross.lottery.utils.FreemarkerHelper;
+import com.mediacross.lottery.utils.LangUtils;
 
 /**
  * Action基类，定义请求整个处理流程：
@@ -54,21 +54,22 @@ public abstract class BaseAction implements Action {
 				String template = actionContext.getRequstUri()
 						+ httpFormat.getSuffix();
 				LOG.info("请求响应的模板：" + template);
-				DynaBean dynaBean = execute(paramMap);
-				String content = freemarkerHelper.merge(
-						template, dynaBean == null ? null : 
-							((BasicDynaBean)dynaBean).getMap());
+
+				BasicDynaBean dynaBean = (BasicDynaBean) execute(paramMap);
+				String content = freemarkerHelper.merge(template,
+						dynaBean == null ? null : dynaBean.getMap());
 
 				// 组装Response对象。
 				Response response = new Response();
 				response.setStatus(HttpStatus.SC_OK);
 				response.setType(httpFormat.getContentType());
 				response.setContent(content);
+				LOG.info("响应内容：" + response);
+
 				return response;
 			} else {
-				LOG.error("认证不通过或者参数中包含无效值！");
-				// TODO
-				throw new AppException(10, "认证不通过或者参数中包含无效值！");
+				// never pass here
+				throw new AppException(10005, "无效请求");
 			}
 		} catch (AppException e) {
 			Response response = new Response();
@@ -76,6 +77,7 @@ public abstract class BaseAction implements Action {
 			response.setType(httpFormat.getContentType());
 			response.setContent(freemarkerHelper.merge(
 					"error" + httpFormat.getSuffix(), e));
+			LOG.warn(StringUtils.EMPTY, e);
 			return response;
 		}
 	}
@@ -87,7 +89,7 @@ public abstract class BaseAction implements Action {
 	 *            参数Map
 	 * @return 不合法返回false，否则返回true
 	 */
-	public boolean validate(Map paramMap) {
+	public boolean validate(Map paramMap) throws AppException {
 		return true;
 	}
 
@@ -106,16 +108,21 @@ public abstract class BaseAction implements Action {
 	 * @param paramMap
 	 *            参数Map
 	 * @return 无效返回false，否则返回true
+	 * @throws AppException
 	 */
-	final boolean authenticate(Map paramMap) {
+	final boolean authenticate(Map paramMap) throws AppException {
 		if (MapUtils.isEmpty(paramMap) || !paramMap.containsKey("sign")) {
-			return false;
+			throw new AppException(10002, "无sign签名参数");
 		} else {
 			String sign = (String) paramMap.remove("sign");
-			return sign.equals(sign(config.getClientToken(), paramMap));
+			if (sign.equals(LangUtils.sign(config.getClientToken(), paramMap))) {
+				return true;
+			} else {
+				throw new AppException(10003, "sign签名参数值无效");
+			}
 		}
 	}
-	
+
 	final HttpFormat getResultFormat(ActionContext actionContext) {
 		Map paramMap = actionContext.getParamMap();
 		// 获取请求内容类型，默认是json
@@ -128,34 +135,5 @@ public abstract class BaseAction implements Action {
 			httpFormat = HttpFormat.html;
 		}
 		return httpFormat;
-	}
-	
-	static String sign(String token, Map<String, String> paramMap) {
-		// 拼接有序的参数名-值串
-		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append(token);
-		if (MapUtils.isNotEmpty(paramMap)) {
-			// 对参数名进行字典排序
-			String[] keyArray = paramMap.keySet().toArray(new String[0]);
-			Arrays.sort(keyArray);
-			for (String key : keyArray) {
-				stringBuilder.append(key).append(paramMap.get(key));
-			}
-		}
-
-		// SHA-1编码， 这里使用的是Apache
-		// codec，即可获得签名(shaHex()会首先将中文转换为UTF8编码然后进行sha1计算，使用其他的工具包请注意UTF8编码转换)
-		/*
-		 * 以下sha1签名代码效果等同 byte[] sha =
-		 * org.apache.commons.codec.digest.DigestUtils
-		 * .sha(org.apache.commons.codec
-		 * .binary.StringUtils.getBytesUtf8(codes)); String sign =
-		 * org.apache.commons
-		 * .codec.binary.Hex.encodeHexString(sha).toUpperCase();
-		 */
-		String codes = stringBuilder.toString();
-		String sign = DigestUtils.shaHex(codes).toUpperCase();
-
-		return sign;
 	}
 }
