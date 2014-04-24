@@ -113,6 +113,12 @@
 		</dependency>
 		<!-- junit依赖结束 -->
 		<dependency>
+			 <groupId>org.quartz-scheduler</groupId>
+			 <artifactId>quartz</artifactId>
+			 <version>1.8.4</version>
+		</dependency>
+		<!-- hibernate begin -->
+		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
 			<version>3.6.10.Final</version>
@@ -132,6 +138,7 @@
 			<artifactId>cglib-nodep</artifactId>
 			<version>2.1_3</version>
 		</dependency>
+		<!-- hibernate end-->
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>

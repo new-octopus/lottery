@@ -31,12 +31,12 @@ public class ExchangeAction extends BaseAction {
 	public DynaBean execute(Map paramMap) throws AppException {
 		String lotteryNo = DesUtil.decrypt((String) paramMap.get("lottery_no"),
 				config.getClientToken());
-		LotteryAwards lotteryAwards = lotteryAwardsService.getLotteryAwards(lotteryNo);
+		
+		 LotteryAwards lotteryAwards = lotteryAwardsService.getLotteryAwards(lotteryNo);
 		 DynaBean result = LangUtils.newInstance(resultClazz);
 		// 未中奖
 		if (lotteryAwards == null) {
 			result.set("lottery_state", LotteryAwardsStatus.LOSE);
-			// 中奖
 		} else {
 			result.set("lottery_state", LotteryAwardsStatus.WIN);
 			result.set("lottery_awards", lotteryAwards);

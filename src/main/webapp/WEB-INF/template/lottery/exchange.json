@@ -5,7 +5,7 @@
 	"lottery_state": ${lottery_state},
 	<#if lottery_awards ??>
 		"details": {
-				"awards_time": "${lottery_awards.awardsTime}",
+				"awards_time": "${lottery_awards.awardsTimeStr}",
 				"awards_grade": "${lottery_awards.awardsGrade}",
 				"awards_amount": "${lottery_awards.awardsAmount}"
 		}

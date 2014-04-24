@@ -22,4 +22,12 @@ public interface LotteryService {
 	 */
 	boolean updateLottery(String lotteryNo, int lotteryStatus) throws AppException;
 	
+	/**
+	 * 每隔5分钟重置彩票领取状态。
+	 * <p/>
+	 * 超过5分钟没有确认彩票被领取，则将状态重置为未领取。
+	 * @see LotteryStatus
+	 */
+	void resetLotteryInLoop();
+	
 }

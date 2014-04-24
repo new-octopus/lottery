@@ -76,4 +76,28 @@
 			<tx:method name="*" propagation="REQUIRED" />
 		</tx:attributes>
 	</tx:advice>
+	
+	<!-- resetLotteryJob -->
+	<bean id="resetLotteryJob"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="lotteryServiceImpl"></property>
+		<property name="targetMethod" value="resetLotteryInLoop"></property>
+		<property name="concurrent" value="false"></property>
+	</bean>
+	<bean id="resetLotteryTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="resetLotteryJob"></property>
+		<property name="cronExpression" value="${cron.expr.reset.lottery}"></property>
+	</bean>
+	
+	<bean id="quartzScheduler" autowire-candidate="false"
+		class="org.springframework.scheduling.quartz.SchedulerFactoryBean" lazy-init="false">
+		<property name="dataSource">
+			<null />
+		</property>
+		<property name="triggers">
+			<list>
+				<ref local="resetLotteryTrigger" />
+			</list>
+		</property>
+	</bean>
 </beans>

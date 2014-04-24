@@ -8,6 +8,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import com.mediacross.lottery.utils.DateUtil;
+import com.mediacross.lottery.utils.DateUtil.DateFmts;
 
 @Entity
 @Table(name="lottery_awards")
@@ -16,7 +20,7 @@ public class LotteryAwards {
 	private long lotteryId;
 	private String awardsGrade;
 	private long awardsAmount;
-	private String awardsTime;
+	private Date awardsTime;
 	private String note;
 	private Date created;
 	/**
@@ -76,13 +80,19 @@ public class LotteryAwards {
 	 * @return the awardsTime
 	 */
 	@Column(name="awards_time")
-	public String getAwardsTime() {
+	public Date getAwardsTime() {
 		return awardsTime;
 	}
+	
+	@Transient
+	public String getAwardsTimeStr() {
+		return DateUtil.getDate(DateFmts.YYYY_MM_DD_HHMMSS, awardsTime);
+	}
+	
 	/**
 	 * @param awardsTime the awardsTime to set
 	 */
-	public void setAwardsTime(String awardsTime) {
+	public void setAwardsTime(Date awardsTime) {
 		this.awardsTime = awardsTime;
 	}
 	/**

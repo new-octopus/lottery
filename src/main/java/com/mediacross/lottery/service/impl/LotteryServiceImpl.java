@@ -2,6 +2,7 @@ package com.mediacross.lottery.service.impl;
 
 import java.util.Date;
 
+import org.apache.commons.lang.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,12 +37,13 @@ public class LotteryServiceImpl implements LotteryService{
 	@Override
 	public boolean updateLottery(String lotteryNo, int lotteryStatus) throws AppException {
 		String hql = "from Lottery  where lotteryNo=? and status=?";
-		Lottery lottery = (Lottery) hibernateDao.createQuery(hql, lotteryNo, LotteryStatus.GETTING)
+		Lottery lottery = (Lottery) hibernateDao
+				.createQuery(hql, lotteryNo, LotteryStatus.GETTING)
 				.setFirstResult(0)
 				.setMaxResults(1)
 				.uniqueResult();
 		if (lottery == null) {
-			throw new AppException(errorCode, errorMsg);
+			throw new AppException(10001, "彩票确认超时，请重新领取！");
 		} else {
 			lottery.setStatus(LotteryStatus.HAS_GET);
 			lottery.setModified(new Date());
@@ -49,4 +51,13 @@ public class LotteryServiceImpl implements LotteryService{
 			return true;
 		}
 	}
+
+	@Override
+	public void resetLotteryInLoop() {
+		String hql = "update Lottery set status=?, modified=? where modified <= ?";
+		Date now = new Date();
+		hibernateDao.createQuery(hql, LotteryStatus.NOT_GET, now,
+				DateUtils.addMinutes(now, -5)).executeUpdate();
+	}
+	
 }

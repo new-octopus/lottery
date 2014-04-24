@@ -17,7 +17,7 @@ public class LotteryAwardsServiceImpl implements LotteryAwardsService {
 	
 	@Override
 	public LotteryAwards getLotteryAwards(String lotteryNo) throws AppException {
-		// 查询彩票是否开奖
+		// 查询彩票信息
 		String hql = "from Lottery where lotteryNo=?";
 		Lottery lottery = (Lottery) hibernateDao
 				.createQuery(hql, lotteryNo)

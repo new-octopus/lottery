@@ -15,6 +15,7 @@ public class LotteryType {
 	private long id;
 	private String lotteryType;
 	private String lotteryTime;
+	private Date lotteryOpenDate;
 	private Date created;
 	/**
 	 * @return the id
@@ -67,6 +68,19 @@ public class LotteryType {
 	 */
 	public void setCreated(Date created) {
 		this.created = created;
+	}
+	/**
+	 * @return the lotteryOpenDate
+	 */
+	@Column(name="lottery_open_date")
+	public Date getLotteryOpenDate() {
+		return lotteryOpenDate;
+	}
+	/**
+	 * @param lotteryOpenDate the lotteryOpenDate to set
+	 */
+	public void setLotteryOpenDate(Date lotteryOpenDate) {
+		this.lotteryOpenDate = lotteryOpenDate;
 	}
 	
 }
