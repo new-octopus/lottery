@@ -24,8 +24,8 @@ public class LotteryAwardsServiceImpl implements LotteryAwardsService {
 				.setFirstResult(0)
 				.setMaxResults(1)
 				.uniqueResult();
+		// 未中奖。
 		if (lottery==null) {
-			// TODO
 			return null;
 		} else {
 			hql = "from LotteryAwards where lotteryId=?";

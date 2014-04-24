@@ -25,8 +25,7 @@ public class LotteryServiceImpl implements LotteryService{
 				.setMaxResults(1)
 				.uniqueResult();
 		if (lottery == null) {
-			// 彩票已经分配完了。
-			throw new AppException(0, null);
+			throw new AppException(10004, "彩票已经领光");
 		} else {
 			lottery.setStatus(LotteryStatus.GETTING);
 			hibernateDao.save(lottery);
@@ -35,15 +34,14 @@ public class LotteryServiceImpl implements LotteryService{
 	}
 
 	@Override
-	public boolean updateLottery(String lotteryNo, int lotteryStatus) {
+	public boolean updateLottery(String lotteryNo, int lotteryStatus) throws AppException {
 		String hql = "from Lottery  where lotteryNo=? and status=?";
 		Lottery lottery = (Lottery) hibernateDao.createQuery(hql, lotteryNo, LotteryStatus.GETTING)
 				.setFirstResult(0)
 				.setMaxResults(1)
 				.uniqueResult();
 		if (lottery == null) {
-			// TODO
-			return false;
+			throw new AppException(errorCode, errorMsg);
 		} else {
 			lottery.setStatus(LotteryStatus.HAS_GET);
 			lottery.setModified(new Date());

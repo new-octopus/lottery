@@ -20,6 +20,6 @@ public interface LotteryService {
 	 * @param lotteryStatus
 	 * @return 是否成功。
 	 */
-	boolean updateLottery(String lotteryNo, int lotteryStatus);
+	boolean updateLottery(String lotteryNo, int lotteryStatus) throws AppException;
 	
 }
