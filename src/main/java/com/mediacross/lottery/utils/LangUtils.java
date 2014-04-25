@@ -56,9 +56,10 @@ public final class LangUtils {
 	}
 	
 	public static void main(String[] args) {
-		System.out.println(sign("1q2r3e4w", null));
+//		System.out.println(sign("1q2r3e4w", null));
+		System.out.println(DesUtil.encrypt("adfdafdafd","1q2r3e4w"));
 		Map map = new HashMap();
-		map.put("lottery_no","pMnElDWSdx3ZJx4TIUAqzPQs338guWAi");
+		map.put("lottery_no","EkgEdyv+sArq/+vJu932sA==");
 		System.out.println(sign("1q2r3e4w", map));
 	}
 }
