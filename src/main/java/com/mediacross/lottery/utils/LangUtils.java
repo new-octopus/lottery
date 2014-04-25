@@ -1,6 +1,7 @@
 package com.mediacross.lottery.utils;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.beanutils.DynaBean;
@@ -52,5 +53,12 @@ public final class LangUtils {
 		String sign = DigestUtils.shaHex(codes).toUpperCase();
 	
 		return sign;
+	}
+	
+	public static void main(String[] args) {
+		System.out.println(sign("1q2r3e4w", null));
+		Map map = new HashMap();
+		map.put("lottery_no","pMnElDWSdx3ZJx4TIUAqzPQs338guWAi");
+		System.out.println(sign("1q2r3e4w", map));
 	}
 }

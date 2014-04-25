@@ -25,4 +25,13 @@ public class AppException extends Exception {
 	public String getErrorMsg() {
 		return errorMsg;
 	}
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "AppException [errorCode=" + errorCode + ", errorMsg="
+				+ errorMsg + "]";
+	}
+	
 }

@@ -5,6 +5,8 @@ import java.util.Date;
 import org.apache.commons.lang.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mediacross.lottery.common.Constants.LotteryStatus;
 import com.mediacross.lottery.common.error.AppException;
@@ -18,6 +20,7 @@ public class LotteryServiceImpl implements LotteryService{
 	private HibernateDao<Lottery> hibernateDao;
 	
 	@Override
+	@Transactional(propagation=Propagation.REQUIRED)
 	public Lottery getLottery() throws AppException {
 		String hql = "from Lottery where status=?";
 		Lottery lottery = (Lottery) hibernateDao
@@ -54,10 +57,11 @@ public class LotteryServiceImpl implements LotteryService{
 
 	@Override
 	public void resetLotteryInLoop() {
-		String hql = "update Lottery set status=?, modified=? where modified <= ?";
+		String hql = "update Lottery set status=?, modified=? where modified <= ? and status=?";
 		Date now = new Date();
 		hibernateDao.createQuery(hql, LotteryStatus.NOT_GET, now,
-				DateUtils.addMinutes(now, -5)).executeUpdate();
+				DateUtils.addMinutes(now, -5), LotteryStatus.GETTING)
+				.executeUpdate();
 	}
 	
 }
