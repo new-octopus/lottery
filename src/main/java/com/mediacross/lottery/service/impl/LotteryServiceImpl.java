@@ -29,9 +29,10 @@ public class LotteryServiceImpl implements LotteryService{
 				.setMaxResults(1)
 				.uniqueResult();
 		if (lottery == null) {
-			throw new AppException(10004, "彩票已经领光");
+			throw new AppException("10004", "彩票已经领光");
 		} else {
 			lottery.setStatus(LotteryStatus.GETTING);
+			lottery.setModified(new Date());
 			hibernateDao.save(lottery);
 			return lottery;
 		}
@@ -39,18 +40,28 @@ public class LotteryServiceImpl implements LotteryService{
 
 	@Override
 	public boolean updateLottery(String lotteryNo, int lotteryStatus) throws AppException {
-		String hql = "from Lottery  where lotteryNo=? and status=?";
+		String hql = "from Lottery  where lotteryNo=?";
 		Lottery lottery = (Lottery) hibernateDao
-				.createQuery(hql, lotteryNo, LotteryStatus.GETTING)
+				.createQuery(hql, lotteryNo)
 				.setFirstResult(0)
 				.setMaxResults(1)
 				.uniqueResult();
 		if (lottery == null) {
-			throw new AppException(10001, "彩票确认超时，请重新领取！");
+			throw new AppException("10007", "请求参数lottery_no值无效。");
 		} else {
-			lottery.setStatus(LotteryStatus.HAS_GET);
-			lottery.setModified(new Date());
-			hibernateDao.save(lottery);
+			switch (lottery.getStatus()) {
+			case LotteryStatus.GETTING:
+				lottery.setStatus(LotteryStatus.HAS_GET);
+				lottery.setModified(new Date());
+				hibernateDao.save(lottery);
+				break;
+			case LotteryStatus.HAS_GET:
+				throw new AppException("10005", "彩票已确认！");
+			case LotteryStatus.NOT_GET:
+				throw new AppException("10001", "彩票确认超时，请重新领取！");
+			default:
+				break;
+			}
 			return true;
 		}
 	}

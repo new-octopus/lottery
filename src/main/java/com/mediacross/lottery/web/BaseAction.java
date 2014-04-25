@@ -69,7 +69,7 @@ public abstract class BaseAction implements Action {
 				return response;
 			} else {
 				// never pass here
-				throw new AppException(10005, "无效请求");
+				throw new AppException("10005", "无效请求");
 			}
 		} catch (AppException e) {
 			Response response = new Response();
@@ -112,13 +112,13 @@ public abstract class BaseAction implements Action {
 	 */
 	final boolean authenticate(Map paramMap) throws AppException {
 		if (MapUtils.isEmpty(paramMap) || !paramMap.containsKey("sign")) {
-			throw new AppException(10002, "无sign签名参数");
+			throw new AppException("10002", "无sign签名参数");
 		} else {
 			String sign = (String) paramMap.remove("sign");
 			if (sign.equals(LangUtils.sign(config.getClientToken(), paramMap))) {
 				return true;
 			} else {
-				throw new AppException(10003, "sign签名参数值无效");
+				throw new AppException("10003", "sign签名参数值无效");
 			}
 		}
 	}

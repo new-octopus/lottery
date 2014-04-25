@@ -14,10 +14,13 @@
         		  $("#t_lottery_no").attr("style","display");
         		  $("#i_lottery_no").attr("style","display");
         		  $("#J_lottery_no").val("VvTGOrK9vRbaQmq+5ZUacYacK/qgcbxx");
+        		  $("#J_sign").val("490F19C982727DDFB093443E96F69D74876E5A2F");
         		  break;
         	  default:
         		  $("#t_lottery_no").attr("style","display:none");
         		  $("#i_lottery_no").attr("style","display:none");
+        		  $("#J_lottery_no").val("");
+        		  $("#J_sign").val("E19741A0D31FD3146F212CF30F0E9DE6CBB87DA5");
         	  }
         	  $("#J_url").val("");
         	  $("#J_result").val("");
@@ -74,7 +77,7 @@
                             </div>
                             <div class="f-part">
                                 <input id="J_sign" name="sign" class="input-plain itxt-l"
-                                       value="xxx" type="text" readonly="readonly">
+                                       value="E19741A0D31FD3146F212CF30F0E9DE6CBB87DA5"  type="text" >
                                 <span>*</span>
                             </div>
                             <div id="t_lottery_no" class="tit"  style="display: none;">
@@ -82,7 +85,7 @@
                             </div>
                             <div id="i_lottery_no" class="f-part" style="display: none;">
                                 <input id="J_lottery_no" name="lottery_no" class="input-plain itxt-l"
-                                       value="VvTGOrK9vRbaQmq+5ZUaceyqSh3CF7Ym" type="text"  readonly="readonly">
+                                       type="text" >
                                 <span>*</span>
                             </div>
                         </li>

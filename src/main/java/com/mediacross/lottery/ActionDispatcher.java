@@ -16,6 +16,10 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Repository;
 
 import com.mediacross.lottery.common.Config;
+import com.mediacross.lottery.common.HttpFormat;
+import com.mediacross.lottery.common.HttpStatus;
+import com.mediacross.lottery.common.error.AppException;
+import com.mediacross.lottery.utils.FreemarkerHelper;
 
 @Repository
 public class ActionDispatcher implements
@@ -25,6 +29,8 @@ public class ActionDispatcher implements
 
 	@Autowired
 	private Config config;
+	@Autowired
+	protected FreemarkerHelper freemarkerHelper;
 	private Map<String, Action> actionMap;
 	private ApplicationContext applicationContext;
 
@@ -39,7 +45,10 @@ public class ActionDispatcher implements
 		Action actionBean = null;
 		if ((actionBean = actionMap.get(context.getRequstUri())) == null) {
 			Response response = new Response();
-			response.setStatus(404);
+			response.setStatus(HttpStatus.SC_NOT_FOUND);
+			response.setType(HttpFormat.json.getContentType());
+			response.setContent(freemarkerHelper.merge(
+					"error.json", new AppException("002", "请求资源不存在")));
 			return response;
 		} else {
 			LOG.debug("请求uri[" + context.getRequstUri() + "]交给actionBean["

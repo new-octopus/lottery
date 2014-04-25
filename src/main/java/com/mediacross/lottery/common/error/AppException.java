@@ -6,16 +6,16 @@ package com.mediacross.lottery.common.error;
  * @author qaohao
  */
 public class AppException extends Exception {
-	private int errorCode;
+	private String errorCode;
 	private String errorMsg;
-	public AppException(int errorCode, String errorMsg) {
+	public AppException(String errorCode, String errorMsg) {
 		this.errorCode = errorCode;
 		this.errorMsg = errorMsg;
 	}
 	/**
 	 * @return the errorCode
 	 */
-	public int getErrorCode() {
+	public String getErrorCode() {
 		return errorCode;
 	}
 

@@ -33,7 +33,7 @@ public class EnsureAction extends BaseAction {
 		}
 
 		if (MapUtils.isEmpty(paramMap) || !paramMap.containsKey("lottery_no")) {
-			throw new AppException(10006, "缺少必选请求参数:lottery_no");
+			throw new AppException("10006", "缺少必选请求参数:lottery_no");
 		}
 		return true;
 	}
