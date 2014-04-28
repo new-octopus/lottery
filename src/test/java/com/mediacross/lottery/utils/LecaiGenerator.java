@@ -41,16 +41,20 @@ public class LecaiGenerator {
 	}
 	
 	static final String sql_tpl = "INSERT INTO lottery VALUES ('%d', '%s', '1', '0', '', '%s', '%s')";
+	static final String ora_sql_tpl = "INSERT INTO LOTTERY VALUES ('%d', '%s', '1', '0', '', TO_TIMESTAMP('%s', 'YYYY-MM-DD HH24:MI:SS'), TO_TIMESTAMP('%s', 'YYYY-MM-DD HH24:MI:SS'))";
 
 	public static void main(String[] args) throws IOException {
 		int idx = 1;
 		FileOutputStream fos = new FileOutputStream("C:\\Users\\qaohao\\Desktop\\lecai_lottery.sql");
-		for (String lecai : genLecais(20000)) {
+		FileOutputStream fos_ora = new FileOutputStream("C:\\Users\\qaohao\\Desktop\\lecai_lottery_ora.sql");
+		for (String lecai : genLecais(10)) {
 			String now = DateUtil.getDate(DateFmts.YYYY_MM_DD_HHMMSS,
 					new Date());
 			IOUtils.write(String.format(sql_tpl, idx, lecai, now, now)+";\r\n", fos);
+			IOUtils.write(String.format(ora_sql_tpl, idx, lecai, now, now)+";\r\n", fos_ora);
 			idx++;
 		}
 		IOUtils.closeQuietly(fos);
+		IOUtils.closeQuietly(fos_ora);
 	}
 }
